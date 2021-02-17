@@ -6,7 +6,27 @@
       <button mat-raised-button color="accent" *ngIf="this.showButton" (click)="addToHomeScreen()">Add to home screen</button>
   </mat-toolbar-row>
 </mat-toolbar>
-<main>
+
+<div>
+  <h2>Home Address:</h2>
+  <p>
+    <app-address (setAddress)="getAddress($event)" adressType="geocode"></app-address>
+  </p>
+
+  <b>Address: </b> {{formattedAddress}}
+  <br><br>
+  <h2>Office Address:</h2>
+  <p>
+    <app-address (setAddress)="getEstablishmentAddress($event)" adressType="establishment"></app-address>
+  </p>
+  <b>Address:</b> {{formattedEstablishmentAddress}}
+  <br>
+  <b>Phone:</b> {{phone}}
+</div>
+<br>
+<hr>
+
+<!-- <main>
   <mat-card *ngFor="let item of responses">
       <mat-card-header>
           <mat-card-title>{{item.name}}</mat-card-title>
@@ -18,6 +38,6 @@
         <a button mat-raised-button href="{{item.url}}" color="primary">More</a>
       </mat-card-actions>
   </mat-card>
-</main>
+</main> -->
 <router-outlet></router-outlet>
 

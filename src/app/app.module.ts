@@ -10,11 +10,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-
+import { AddressComponent } from './address/address.component';
 @NgModule({
   declarations: [
-    AppComponent
-  ],
+    AppComponent,
+      AddressComponent,
+   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
