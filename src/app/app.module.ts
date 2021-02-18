@@ -36,6 +36,8 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
     FormsModule,
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestore,
+    AngularFireAuthModule,
     AngularFireMessagingModule,
     AppRoutingModule,
     BrowserAnimationsModule,
