@@ -1,6 +1,5 @@
 import { EventEmitter, ViewChild,Component, Input, OnInit, Output } from '@angular/core';
-import {} from "googlemaps";
-
+import { } from 'googlemaps';
 @Component({
   selector: 'app-address',
   template: `

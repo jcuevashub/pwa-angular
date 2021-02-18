@@ -8,7 +8,7 @@ export interface ResponseData{
   url: string;
   html: string;
   markdown: string;
-}  
+}
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +21,5 @@ constructor(private httClient: HttpClient){}
 fetch(): Observable<ResponseData[]> {
   return this.httClient.get(this.baseUrl) as Observable<ResponseData[]>;
 }
-  
+
 }

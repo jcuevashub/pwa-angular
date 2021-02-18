@@ -1,0 +1,67 @@
+
+  <!-- <div>
+    <div #cardInfo></div>
+    <div class="error" *ngIf="cardError">
+      {{cardError}}
+    </div>
+  </div> -->
+
+  <div class="cell example example5 credit-card" id="example-5">
+    <form>
+
+      <fieldset>
+        <legend class="card-only">Pay with card</legend>
+        <legend class="payment-request-available">O introduce los datos de la tarjeta</legend>
+        <div class="row">
+          <div class="field">
+            <label for="example5-name">Name</label>
+            <input id="example5-name" class="input" type="text" placeholder="Jane Doe" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="example5-email">Email</label>
+            <input id="example5-email" class="input" type="text" placeholder="janedoe@gmail.com" required>
+          </div>
+          <div class="field">
+            <label for="example5-phone">Phone</label>
+            <input id="example5-phone" class="input" type="text" placeholder="(941) 555-0123" required>
+          </div>
+        </div>
+        <div data-locale-reversible="">
+          <div class="row">
+            <div class="field">
+              <label for="example5-address">Address</label>
+              <input id="example5-address" class="input" type="text" placeholder="185 Berry St" required>
+            </div>
+          </div>
+          <div class="row" >
+            <div class="field">
+              <label for="example5-city">City</label>
+              <input id="example5-city" class="input" type="text" placeholder="San Francisco" required>
+            </div>
+            <div class="field">
+              <label for="example5-state">State</label>
+              <input id="example5-state"  class="input empty" type="text" placeholder="CA" required>
+            </div>
+            <div class="field">
+              <label for="example5-zip">ZIP</label>
+              <input id="example5-zip" class="input empty" type="text" placeholder="94107" required>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="example5-card">Card Info</label>
+            <div #cardInfo>
+              <!--Stripe paymentRequestButton Element inserted here-->
+            </div>
+          </div>
+        </div>
+        <button type="submit" (click)="onClick()">Pagar $25</button>
+      </fieldset>
+    </form>
+    <div class="error" *ngIf="cardError">
+      {{cardError}}
+    </div>
+  </div>

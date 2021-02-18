@@ -26,7 +26,6 @@ export class AppComponent implements OnInit {
   @HostListener('window:beforeinstallprompt', ['$event'])
 
   onbeforeinstallprompt(e) {
-    console.log("Holaaa", e);
     //Prevent Chrome 67 and earlier from automatically showing the prompt
     e.preventDefault();
     //Stash the event so it can be triggered later.
