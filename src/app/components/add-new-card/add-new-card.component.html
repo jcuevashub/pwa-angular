@@ -1,0 +1,32 @@
+<div class="credit-card">
+  <summary>Add new</summary>
+  <form id="payment-method-form">
+    <label>
+      Cardholder name
+      <input type="text" name="name" required />
+    </label>
+    <div class="row">
+      <div class="field">
+        <label for="example5-card">Card Info</label>
+        <div #cardInfo>
+        </div>
+      </div>
+    </div>
+    <div id="error-message" role="alert"></div>
+    <button type="submit" (click)="addNewCard()">Save Card</button>
+  </form>
+</div>
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Favorite food</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let food of paymentMethods" [value]="paymentMethods.value">
+        {{food.viewValue}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div>
+  <h2>Payments</h2>
+  <ul id="payments-list"></ul>
+</div>

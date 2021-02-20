@@ -10,7 +10,6 @@ export class AuthFirebaseService {
 
   constructor(private firebaseAuth: AngularFireAuth) {
     this.user = this.firebaseAuth.authState;
-    console.log(this.user);
    }
 
    signup(email: string, pass){
@@ -34,13 +33,5 @@ export class AuthFirebaseService {
    logout() {
      this.firebaseAuth.signOut();
    }
-
-   verifyEmail(): Promise<void> {
-    return
-  }
-
-  getUid() {
-
-  }
 
 }

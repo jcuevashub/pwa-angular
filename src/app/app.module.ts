@@ -1,3 +1,5 @@
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireModule } from '@angular/fire';
 import { LoginComponent } from './components/login/login.component';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -17,10 +19,9 @@ import { AddPoolComponent } from './components/add-pool/add-pool.component';
 import { ServiceDetailsComponent } from './components/service-details/service-details.component';
 import { PoolDetailsComponent } from './components/pool-details/pool-details.component';
 import { ServiceListComponent } from './components/service-list/service-list.component';
-import { AngularFireModule } from '@angular/fire';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AddNewCardComponent } from './components/add-new-card/add-new-card.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,13 +31,15 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
       ServiceDetailsComponent,
       PoolDetailsComponent,
       ServiceListComponent,
-      LoginComponent
+      LoginComponent,
+      AddNewCardComponent
    ],
   imports: [
     FormsModule,
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireMessagingModule,
+    AngularFireAuthModule,
+    AngularFirestoreModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
