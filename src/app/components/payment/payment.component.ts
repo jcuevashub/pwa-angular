@@ -2,33 +2,29 @@ import { PaymentService } from './../../services/payment.service';
 import { Component, ChangeDetectorRef, AfterViewInit, OnDestroy, ViewChild, ElementRef, NgZone, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
-
 @Component({
   selector: 'app-payment',
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css']
 })
 
-export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
+export class PaymentComponent implements AfterViewInit, OnDestroy {
   @ViewChild('cardInfo') cardInfo: ElementRef;
-  amount: number = 500;
+  amount: number = 5.00;
   card: any;
   cardHandler = this.onChange.bind(this);
   cardError: string;
-  currentUser: string;
+  currentUser: any;
   currency: string = 'usd';
   customerData: any;
   cardholderName: string = 'Jackson Cuevas';
 
   constructor(private cd: ChangeDetectorRef, private NgZone: NgZone, private paymentService: PaymentService, private firebase: AngularFirestore, public afAuth: AngularFireAuth) {
     this.afAuth.authState.subscribe((auth) => {
-      if(auth) this.currentUser = auth.uid;
+      if(auth) this.currentUser = auth;
       console.log(this.currentUser);
     });
 
-   }
-   ngOnInit(){
-    //this.getAllPaymentMethods();
    }
 
   ngAfterViewInit() {
@@ -83,24 +79,56 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
     this.cd.detectChanges();
   }
 
-async onClick() {
-  //await this.addNewCard();
 
-  const { token, error } = await stripe.createToken(this.card);
-  if (error) {
-    console.log('Something is wrong:', error);
-  } else {
-    console.log('Success!', token);
+async onClick() {
+
+  const customer = await stripe.customers.create({ email: this.currentUser.email,
+    phone: this.currentUser.phoneNumber,
+    name: this.currentUser.displayName});
+
+    const intent = await stripe.setupIntents.create({
+      customer: customer.id,
+    });
+
+    await this.firebase.firestore.collection('customers').doc(this.currentUser).set({
+      customer_id: customer.id,
+      setup_secret: intent.client_secret,
+    });
+
+    await this.firebase.firestore.collection('users').doc(this.currentUser.uid).set({
+      email: this.currentUser.email,
+      phone: this.currentUser.phoneNumber,
+      name: this.currentUser.displayName
+    })
+
+
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    customer: customer.id,
+    setup_future_usage: 'off_session',
+    amount: this.amount,
+    currency: "usd"
+  });
+
+  if (paymentIntent.status === "succeeded") {
+    console.log("✅ Successfully charged card off session");
+  }
     const data = {
-      payment_methods: {
-        card: this.card,
-        billing_details: {
-          name: this.cardholderName,
-        },},
+      customer: 'cus_IygT3PVCZRup49',
+      payment_method: 'pm_1IMklFLjeFJCOWeVSIhPHxGr',
       currency: 'usd',
       amount: this.amount,
       status: 'new',
+      capture_method: 'manual'
     }
+
+    fetch("/create-payment-intent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
 
     await this.firebase
     .firestore
@@ -108,8 +136,8 @@ async onClick() {
     .doc(this.currentUser)
     .collection('payments')
     .add(data);
-  }
 }
+
 
 
 
@@ -136,39 +164,7 @@ async onClick() {
 //   return zeroDecimalCurrency;
 // }
 
-  // getAllPaymentMethods() {
-  //   this.firebase
-  //   .firestore
-  //   .collection('customers')
-  //   .doc(this.currentUser)
-  //   .collection("payment_methods")
-  //   .onSnapshot((snapshot) => {
-  //       snapshot.forEach(function (doc) {
-  //         const paymentMethod = doc.data();
-  //         if (!paymentMethod.card) {
-  //           return;
-  //         }
-
-  //         const optionId = `card-${doc.id}`;
-  //         let optionElement = document.getElementById(optionId);
-
-  //         // Add a new option if one doesn't exist yet.
-  //         if (!optionElement) {
-  //           optionElement = document.createElement('option');
-  //           optionElement.id = optionId;
-  //           document
-  //             .querySelector('select[name=payment-method]')
-  //             .appendChild(optionElement);
-  //         }
-
-  //         //optionElement.value = paymentMethod.id;
-  //         //optionElement.text = `${paymentMethod.card.brand} •••• ${paymentMethod.card.last4} | Expires ${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`;
-  //       });
-  //   });
-
-  // }
-
-  // Format amount for diplay in the UI
+// // Format amount for diplay in the UI
 // formatAmount(amount, currency) {
 //   amount = this.zeroDecimalCurrency(amount, currency)
 //     ? amount
@@ -179,44 +175,24 @@ async onClick() {
 //   }).format(amount);
 // }
 
-// Check if we have a zero decimal currency
-// https://stripe.com/docs/currencies#zero-decimal
-// zeroDecimalCurrency(amount, currency) {
-//   let numberFormat = new Intl.NumberFormat(['en-US'], {
-//     style: 'currency',
-//     currency: currency,
-//     currencyDisplay: 'symbol',
-//   });
-//   const parts = numberFormat.formatToParts(amount);
-//   let zeroDecimalCurrency = true;
-//   for (let part of parts) {
-//     if (part.type === 'decimal') {
-//       zeroDecimalCurrency = false;
-//     }
-//   }
-//   return zeroDecimalCurrency;
-// }
-// Handle card actions like 3D Secure
-// async handleCardAction(payment, docId) {
-//   const { error, paymentIntent } = await stripe.handleCardAction(
-//     payment.client_secret
-//   );
-//   if (error) {
-//     alert(error.message);
-//     payment = error.payment_intent;
-//   } else if (paymentIntent) {
-//     payment = paymentIntent;
-//   }
+//Handle card actions like 3D Secure
+async handleCardAction(payment, docId) {
+  const { error, paymentIntent } = await stripe.handleCardAction(
+    payment.client_secret
+  );
+  if (error) {
+    alert(error.message);
+    payment = error.payment_intent;
+  } else if (paymentIntent) {
+    payment = paymentIntent;
+  }
 
-//   await this.firebase
-//     .firestore
-//     .collection('stripe_customers')
-//     .doc(this.currentUser)
-//     .collection('payments')
-//     .doc(docId)
-//     .set(payment, { merge: true });
-// }
-
-
-
+  await this.firebase
+    .firestore
+    .collection('stripe_customers')
+    .doc(this.currentUser)
+    .collection('payments')
+    .doc(docId)
+    .set(payment, { merge: true });
+}
 }

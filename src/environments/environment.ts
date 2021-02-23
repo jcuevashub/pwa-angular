@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  stripeKey: 'pk_test_51ILgZHLjeFJCOWeV4MUGrCRGgIrwZKa76wXnwfbBE4TMlLwaoaSBeP8ZLWxZDBKPQ4HB4baDB8p1lkAbk2mrHWmL00WwCx4hCE',
+  stripeKey: 'sk_test_51ILgZHLjeFJCOWeVuGij5Zy1Kk1mlAVo5j21F4n5pYpO5LH7n6Tu4x4QRXr27w4MYQxwYsUe1HgUBmNHNHXU3dkV00cIEFcQl0',
   firebase: {
     apiKey: "AIzaSyCjh_neUUrUr1hvoSk75ZmT3CCyKJNdVoo",
     authDomain: "pwa-app-c8975.firebaseapp.com",

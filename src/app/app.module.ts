@@ -1,3 +1,4 @@
+import { SubcriptionComponent } from './components/subcription/subcription.component';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
 import { LoginComponent } from './components/login/login.component';
@@ -32,7 +33,8 @@ import { AddNewCardComponent } from './components/add-new-card/add-new-card.comp
       PoolDetailsComponent,
       ServiceListComponent,
       LoginComponent,
-      AddNewCardComponent
+      AddNewCardComponent,
+      SubcriptionComponent
    ],
   imports: [
     FormsModule,

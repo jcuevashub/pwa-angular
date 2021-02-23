@@ -17,14 +17,11 @@
   </form>
 </div>
 <div>
-  <mat-form-field appearance="fill">
-    <mat-label>Favorite food</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let food of paymentMethods" [value]="paymentMethods.value">
-        {{food.viewValue}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+<!-- <mat-select formControlName="formControlName" placeholder="">
+    <mat-option *ngFor="let choice of paymentMethods" [value]="choice">
+        choice
+    </mat-option>
+</mat-select> -->
 </div>
 <div>
   <h2>Payments</h2>

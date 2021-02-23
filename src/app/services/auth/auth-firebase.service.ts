@@ -6,6 +6,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
   providedIn: 'root'
 })
 export class AuthFirebaseService {
+
   user: Observable<firebase.default.User>;
 
   constructor(private firebaseAuth: AngularFireAuth) {
@@ -33,5 +34,6 @@ export class AuthFirebaseService {
    logout() {
      this.firebaseAuth.signOut();
    }
+
 
 }

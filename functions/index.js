@@ -11,22 +11,48 @@ const stripe = new Stripe('sk_test_51ILgZHLjeFJCOWeVuGij5Zy1Kk1mlAVo5j21F4n5pYpO
   apiVersion: '2020-08-27',
 });
 
+// const nodemailer = require('nodemailer');
+// // Configure the email transport using the default SMTP transport and a GMail account.
+// // For other types of transports such as Sendgrid see https://nodemailer.com/transports/
+// const gmailEmail = functions.config().gmail.email;
+// const gmailPassword = functions.config().gmail.password;
+// const mailTransport = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: gmailEmail,
+//     pass: gmailPassword,
+//   },
+// });
+
 /**
  * When a user is created, create a Stripe customer object for them.
  *
  * @see https://stripe.com/docs/payments/save-and-reuse#web-create-customer
  */
 exports.createStripeCustomer = functions.auth.user().onCreate(async (user) => {
-  const customer = await stripe.customers.create({ email: user.email });
+
+  const customer = await stripe.customers.create({ email: user.email,
+    phone: user.phoneNumber,
+    name: user.displayName});
+
   const intent = await stripe.setupIntents.create({
     customer: customer.id,
   });
+
   await admin.firestore().collection('customers').doc(user.uid).set({
     customer_id: customer.id,
     setup_secret: intent.client_secret,
   });
+
+  await admin.firestore().collection('users').doc(user.uid).set({
+    email: user.email,
+    phone: user.phoneNumber,
+    name: user.displayName
+  })
+
   return;
 });
+
 
 /**
  * When adding the payment method ID on the client,
@@ -199,3 +225,54 @@ function userFacingMessage(error) {
     ? error.message
     : 'An error occurred, developers have been alerted';
 }
+
+// Sends an email confirmation when a user changes his mailing list subscription.
+// exports.sendEmailConfirmation = functions.database.ref('/users/{uid}').onWrite(async (change) => {
+//   // Early exit if the 'subscribedToMailingList' field has not changed
+//   if (change.after.child('subscribedToMailingList').val() === change.before.child('subscribedToMailingList').val()) {
+//     return null;
+//   }
+
+//   const val = change.after.val();
+
+//   const mailOptions = {
+//     from: '"Spammy Corp." <noreply@firebase.com>',
+//     to: val.email,
+//   };
+
+//   const subscribed = val.subscribedToMailingList;
+
+//   // Building Email message.
+//   mailOptions.subject = subscribed ? 'Thanks and Welcome!' : 'Sad to see you go :`(';
+//   mailOptions.text = subscribed ?
+//       'Thanks you for subscribing to our newsletter. You will receive our next weekly newsletter.' :
+//       'I hereby confirm that I will stop sending you the newsletter.';
+
+//   try {
+//     await mailTransport.sendMail(mailOptions);
+//     console.log(`New ${subscribed ? '' : 'un'}subscription confirmation email sent to:`, val.email);
+//   } catch(error) {
+//     console.error('There was an error while sending the email:', error);
+//   }
+//   return null;
+// });
+
+exports.createSubcription = functions.firestore
+.document('/users/{userId}/pro-membership/token')
+.onCreate(async (snap, context) => {
+  const customer = (await snap.ref.parent.parent.get()).data().customer_id;
+    const subscriptionObj = {
+      customer: customer.id,
+      items: [
+        { price: staqConfig.get('stripeDefaultPriceId') }
+      ],
+    }
+  // const customer = (await dbRef.doc(user.uid).get()).data();
+
+  return stripe.subscriptions.create(subscriptionObj).then(sub => {
+    functions
+    .firestore
+    .document(`users/${userId}/pro-memership`)
+    .onUpdate({status: 'active'})
+  }).catch(err => console.log(err));
+});

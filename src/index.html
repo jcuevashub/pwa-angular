@@ -17,7 +17,12 @@
   <script src="https://checkout.stripe.com/checkout.js"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <script type="text/javascript">
-    var stripe = Stripe('pk_test_51ILgZHLjeFJCOWeV4MUGrCRGgIrwZKa76wXnwfbBE4TMlLwaoaSBeP8ZLWxZDBKPQ4HB4baDB8p1lkAbk2mrHWmL00WwCx4hCE'); // use your test publishable key
+    //var stripe = Stripe('pk_test_51ILgZHLjeFJCOWeV4MUGrCRGgIrwZKa76wXnwfbBE4TMlLwaoaSBeP8ZLWxZDBKPQ4HB4baDB8p1lkAbk2mrHWmL00WwCx4hCE'); // use your test publishable key
+    //var stripe = require('stripe')('pk_test_51ILgZHLjeFJCOWeV4MUGrCRGgIrwZKa76wXnwfbBE4TMlLwaoaSBeP8ZLWxZDBKPQ4HB4baDB8p1lkAbk2mrHWmL00WwCx4hCE');
+    //const { Stripe } = require('stripe');
+    var stripe = new Stripe('pk_test_51ILgZHLjeFJCOWeV4MUGrCRGgIrwZKa76wXnwfbBE4TMlLwaoaSBeP8ZLWxZDBKPQ4HB4baDB8p1lkAbk2mrHWmL00WwCx4hCE', {
+      apiVersion: '2020-08-27',
+    });
     var elements = stripe.elements();
   </script>
 </head>

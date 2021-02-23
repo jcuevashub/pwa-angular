@@ -140,8 +140,9 @@ export class AddNewCardComponent implements AfterViewInit, OnDestroy, OnInit{
           return;
         }
         const optionId = `card-${doc.id}`;
-
-        console.log(doc.id, " => ", doc.data());
+        const paymentValue = paymentMethod.id;
+        console.log(paymentValue);
+        console.log(`${paymentMethod.card.brand} •••• ${paymentMethod.card.last4} | Expires ${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`);
       });
     });
   }
