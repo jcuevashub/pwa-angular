@@ -12,12 +12,8 @@ export class PaymentService {
 
   constructor(private db: AngularFireDatabase, private afAuth: AngularFireAuth) {
     this.afAuth.authState.subscribe((auth) => {
-      if(auth) this.userId = auth.email;
-      console.log(this.userId);
+      if(auth) this.userId = auth.uid;
     });
-
-    this.userId
-    console.log(this.userId);
    }
 
 

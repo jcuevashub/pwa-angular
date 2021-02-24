@@ -6,11 +6,11 @@ import { AngularFireAuth } from '@angular/fire/auth';
   providedIn: 'root'
 })
 export class AuthFirebaseService {
+
   user: Observable<firebase.default.User>;
 
   constructor(private firebaseAuth: AngularFireAuth) {
     this.user = this.firebaseAuth.authState;
-    console.log(this.user);
    }
 
    signup(email: string, pass){
@@ -35,12 +35,5 @@ export class AuthFirebaseService {
      this.firebaseAuth.signOut();
    }
 
-   verifyEmail(): Promise<void> {
-    return
-  }
-
-  getUid() {
-
-  }
 
 }

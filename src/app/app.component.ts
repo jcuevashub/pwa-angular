@@ -58,7 +58,6 @@ export class AppComponent implements OnInit {
   fetchData() {
     this.apiService.fetch().subscribe(
       (data: Array<ResponseData>) => {
-      console.log(data);
       this.responses = data;
     },(err) => {
       console.log(err);
