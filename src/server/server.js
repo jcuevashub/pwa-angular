@@ -1,6 +1,7 @@
 const express = require("express");
-
+var cors = require('cors');
 const app = express();
+app.use(cors());
 
 const stripe = require("stripe")("sk_test_51ILgZHLjeFJCOWeVuGij5Zy1Kk1mlAVo5j21F4n5pYpO5LH7n6Tu4x4QRXr27w4MYQxwYsUe1HgUBmNHNHXU3dkV00cIEFcQl0");
 app.use(express.static("."));
@@ -13,10 +14,37 @@ const calculateOrderAmount = items => {
   return 1400;
 };
 
+const chargeCustomer = async (customerId) => {
+  // Lookup the payment methods available for the customer
+  const paymentMethods = await stripe.paymentMethods.list({
+    customer: customerId,
+    type: "card"
+  });
+
+  // Charge the customer and payment method immediately
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: 1099,
+    currency: "usd",
+    customer: customerId,
+    payment_method: paymentMethods.data[0].id,
+    off_session: true,
+    confirm: true
+  });
+  if (paymentIntent.status === "succeeded") {
+    console.log("✅ Successfully charged card off session");
+  }
+}
+
 app.post("/create-payment-intent", async (req, res) => {
-  const { items } = req.body;
+  console.log(req.body)
+  const { items } = req.body.items;
+  // Alternatively, set up a webhook to listen for the payment_intent.succeeded event
+  // and attach the PaymentMethod to a new Customer
+  const customer = await stripe.customers.create({email: req.body.customer});
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
+    customer: customer.id,
+    setup_future_usage: 'off_session',
     amount: calculateOrderAmount(items),
     currency: "usd"
   });
@@ -24,4 +52,5 @@ app.post("/create-payment-intent", async (req, res) => {
     clientSecret: paymentIntent.client_secret
   });
 });
+
 app.listen(4242, () => console.log('Node server listening on port 4242!'));
